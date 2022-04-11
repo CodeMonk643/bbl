@@ -1,4 +1,4 @@
-import 'package:bbl/screens/driver/login.dart';
+// import 'package:bbl/screens/driver/login.dart';
 import 'package:bbl/screens/user/user_sign.dart';
 import 'package:flutter/material.dart';
 import 'package:bbl/colors.dart';
@@ -12,55 +12,54 @@ class Select extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.only(top: 300),
+          padding: const EdgeInsets.only(top: 350),
           child: Center(
-            child: Column(
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    runApp(MaterialApp(
-                      home: UserSign(),
-                      debugShowCheckedModeBanner: false,
-                      theme: ThemeData(
-                        primarySwatch: primSwat,
-                      ),
-                    ));
-                  },
-                  style: ElevatedButton.styleFrom(
-                      shape: StadiumBorder(),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 60, vertical: 20)),
-                  child: Text("User",
-                      style: GoogleFonts.montserrat(
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                          fontSize: 25)),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    runApp(MaterialApp(
-                      home: Login(),
-                      debugShowCheckedModeBanner: false,
-                      theme: ThemeData(
-                        primarySwatch: primSwat,
-                      ),
-                    ));
-                  },
-                  style: ElevatedButton.styleFrom(
-                      shape: StadiumBorder(),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 60, vertical: 20)),
-                  child: Text("Driver",
-                      style: GoogleFonts.montserrat(
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                          fontSize: 25)),
-                )
-              ],
-            ),
+            child: Column(children: [
+              ElevatedButton(
+                onPressed: () {
+                  runApp(MaterialApp(
+                    home: UserSign(),
+                    debugShowCheckedModeBanner: false,
+                    theme: ThemeData(
+                      primarySwatch: primSwat,
+                    ),
+                  ));
+                },
+                style: ElevatedButton.styleFrom(
+                    shape: StadiumBorder(),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 60, vertical: 20)),
+                child: Text("User",
+                    style: GoogleFonts.montserrat(
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        fontSize: 25)),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+
+              // ],ElevatedButton(
+              //     onPressed: () {
+              //       runApp(MaterialApp(
+              //         home: Login(),
+              //         debugShowCheckedModeBanner: false,
+              //         theme: ThemeData(
+              //           primarySwatch: primSwat,
+              //         ),
+              //       ));
+              //     },
+              //     style: ElevatedButton.styleFrom(
+              //         shape: StadiumBorder(),
+              //         padding:
+              //             EdgeInsets.symmetric(horizontal: 60, vertical: 20)),
+              //     child: Text("Driver",
+              //         style: GoogleFonts.montserrat(
+              //             fontWeight: FontWeight.w700,
+              //             color: Colors.white,
+              //             fontSize: 25)),
+              //   )
+            ]),
           ),
         ),
       ),

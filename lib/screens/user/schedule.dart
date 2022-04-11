@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'package:bbl/colors.dart';
-import 'package:bbl/screens/user/success.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
+import 'package:bbl/services/auth_model.dart';
+import 'package:bbl/services/success_model.dart';
 import 'package:intl/intl.dart';
 
 class Schedule extends StatefulWidget {
@@ -15,9 +18,37 @@ class Schedule extends StatefulWidget {
 class _ScheduleState extends State<Schedule> {
   DateTime date = DateTime.now();
   TextEditingController _textEditingController = TextEditingController();
+
+  final url = "http://8442-122-161-67-51.ngrok.io/api/requests/add";
+
+  void postData() async {
+    try {
+      final response = await post(Uri.parse(url),
+          headers: <String, String>{
+            "Content-Type": "application/json; charset=UTF-8",
+            "auth-token":
+                auth_token[1].authtoken.toString()
+          },
+          body: jsonEncode(<String, String>{
+            "date": date.toString(),
+            "time": selectedValue.toString(),
+            "wasteType": _selectedValue.toString(),
+            "amount": value.round().toString(),
+            // "authtoken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjI1MTIxN2QxNTQzMWJjOGFmMTQyZDNjIn0sImlhdCI6MTY0OTQ4NjA3MX0.5La1cPNoBQnUDXcNnGlKiNZHmc1ylk6CQQ16_DfI1pM"
+          }));
+
+      print(response.body);
+      final resp = jsonDecode(response.body);
+      if (resp["success"] == SuccessLog[0].success) {
+        print("Pickup Scheduled Successfully");
+      }
+    } catch (er) {}
+  }
+
   // TimeOfDay _time = TimeOfDay(hour: 7, minute: 15);
-  double value = 10;
+  double value = 5;
   int selectedValue = 0;
+  int _selectedValue = 0;
 
   Future<Null> selectDate(BuildContext context) async {
     DateTime? _datepicker = await showDatePicker(
@@ -30,11 +61,7 @@ class _ScheduleState extends State<Schedule> {
     if (_datepicker != null && _datepicker != date) {
       setState(() {
         date = _datepicker;
-        _textEditingController
-        ..text = DateFormat("dd/MMM/yyyy").format(date)
-        ..selection = TextSelection.fromPosition(TextPosition(
-            offset: _textEditingController.text.length,
-            affinity: TextAffinity.upstream));
+        // date = DateFormat("dd/mm").format(date);
       });
     }
   }
@@ -121,7 +148,6 @@ class _ScheduleState extends State<Schedule> {
                     onChanged: (_value) {
                       setState(() {
                         selectedValue = _value as int;
-                        print("Morning");
                       });
                     }),
                 RadioListTile(
@@ -134,7 +160,6 @@ class _ScheduleState extends State<Schedule> {
                     onChanged: (_value) {
                       setState(() {
                         selectedValue = _value as int;
-                        print("Afternoon");
                       });
                     }),
                 RadioListTile(
@@ -147,7 +172,6 @@ class _ScheduleState extends State<Schedule> {
                     onChanged: (_value) {
                       setState(() {
                         selectedValue = _value as int;
-                        print("Evening");
                       });
                     }),
                 SizedBox(height: 40),
@@ -157,8 +181,8 @@ class _ScheduleState extends State<Schedule> {
                 ),
                 SfSlider(
                     value: value,
-                    min: 0.0,
-                    max: 20.0,
+                    min: 0,
+                    max: 20,
                     showLabels: true,
                     enableTooltip: true,
                     tooltipShape: SfPaddleTooltipShape(),
@@ -177,7 +201,7 @@ class _ScheduleState extends State<Schedule> {
                 SizedBox(height: 20),
                 RadioListTile(
                     value: 0,
-                    groupValue: selectedValue,
+                    groupValue: _selectedValue,
                     title: Text(
                       "Organic Waste",
                       style: GoogleFonts.montserrat(fontSize: 15),
@@ -187,26 +211,26 @@ class _ScheduleState extends State<Schedule> {
                         style: GoogleFonts.montserrat()),
                     onChanged: (_value) {
                       setState(() {
-                        selectedValue = _value as int;
+                        _selectedValue = _value as int;
                       });
                     }),
                 RadioListTile(
                     value: 1,
-                    groupValue: selectedValue,
+                    groupValue: _selectedValue,
                     title: Text(
                       "Recyclable Waste",
                       style: GoogleFonts.montserrat(fontSize: 15),
                     ),
-                    subtitle:
-                        Text("Contains paper, metal, glass", style: GoogleFonts.montserrat()),
+                    subtitle: Text("Contains paper, metal, glass",
+                        style: GoogleFonts.montserrat()),
                     onChanged: (_value) {
                       setState(() {
-                        selectedValue = _value as int;
+                        _selectedValue = _value as int;
                       });
                     }),
                 RadioListTile(
                     value: 2,
-                    groupValue: selectedValue,
+                    groupValue: _selectedValue,
                     title: Text(
                       "Toxic Waste",
                       style: GoogleFonts.montserrat(fontSize: 15),
@@ -216,12 +240,12 @@ class _ScheduleState extends State<Schedule> {
                         style: GoogleFonts.montserrat()),
                     onChanged: (_value) {
                       setState(() {
-                        selectedValue = _value as int;
+                        _selectedValue = _value as int;
                       });
                     }),
                 RadioListTile(
                     value: 3,
-                    groupValue: selectedValue,
+                    groupValue: _selectedValue,
                     title: Text(
                       "Electronic Waste",
                       style: GoogleFonts.montserrat(fontSize: 15),
@@ -230,23 +254,22 @@ class _ScheduleState extends State<Schedule> {
                         style: GoogleFonts.montserrat()),
                     onChanged: (_value) {
                       setState(() {
-                        selectedValue = _value as int;
+                        _selectedValue = _value as int;
                       });
                     }),
                 SizedBox(height: 20),
                 ElevatedButton(
                     onPressed: () {
-                      runApp(MaterialApp(
-                        home: Success(),
-                        debugShowCheckedModeBanner: false,
-                        theme: ThemeData(primarySwatch: primSwat),
-                      ));
+                      // print("hello world");
+                      // print("date; ", DateFormat("dd/mm").format(date).toString());
+                      postData();
+                      // print("hello world");
                     },
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(10.0),
                       child: Text("Schedule",
                           style: GoogleFonts.montserrat(
-                              fontSize: 15, color: Colors.white)),
+                              fontSize: 20, color: Colors.white)),
                     ))
               ],
             ),
